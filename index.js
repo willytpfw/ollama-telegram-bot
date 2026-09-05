@@ -9,6 +9,7 @@ const MODEL = options.ollama_model || 'llama3.2:latest';
 const TRIGGER_PREFIX = options.trigger_prefix || '/ask';
 const BOT_USERNAME = options.bot_username || '';
 const SYSTEM_PROMPT = options.system_prompt || 'Eres un asistente útil.';
+const RESPONSE_ALL = options.response_all || 'always';
 
 if (!TOKEN) {
   console.error('telegram_bot_token no está configurado. Configuralo en la pestaña Configuration del addon.');
@@ -31,6 +32,8 @@ function sleep(ms) {
 // o null si el mensaje debe ignorarse.
 function extractQuery(text) {
   if (!text) return null;
+
+  if (RESPONSE_ALL === "always") return text.length > 0 ? text : null;
 
   if (text.startsWith(TRIGGER_PREFIX)) {
     const rest = text.slice(TRIGGER_PREFIX.length).trim();
