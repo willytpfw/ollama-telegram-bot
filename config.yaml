@@ -1,0 +1,27 @@
+name: "Ollama Telegram Bot"
+version: "0.1.0"
+slug: "ollama_telegram_bot"
+description: "Responde mensajes de Telegram usando Ollama, vía el proxy de BotMux"
+url: "https://github.com/willytpfw/ollama-telegram-bot"
+arch:
+  - aarch64
+  - amd64
+startup: services
+boot: auto
+init: false
+options:
+  botmux_url: "http://homeassistanttpfw.local:8080"
+  telegram_bot_token: ""
+  ollama_url: "http://192.168.0.160:11434"
+  ollama_model: "llama3.2:latest"
+  trigger_prefix: "/ask"
+  bot_username: "willytpfwbot"
+  system_prompt: "Eres un asistente útil integrado en un chat de Telegram. Respondé de forma breve, clara y directa. No uses formato Markdown ni JSON — solo texto plano. Si no sabés algo con certeza, decilo en vez de inventar una respuesta."
+schema:
+  botmux_url: "url"
+  telegram_bot_token: "password"
+  ollama_url: "url"
+  ollama_model: "str"
+  trigger_prefix: "str"
+  bot_username: "str"
+  system_prompt: "str"
