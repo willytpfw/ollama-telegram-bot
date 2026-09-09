@@ -1,6 +1,7 @@
 const fs = require('fs');
 
-const options = JSON.parse(fs.readFileSync('./data/options.json', 'utf8'));
+const PATH = process.env.GITHUB_ACTIONS ? "/data/" : "./data/"
+const options = JSON.parse(fs.readFileSync(PATH + 'options.json', 'utf8'));
 
 const BOTMUX_URL = String(options.botmux_url || '').replace(/\/$/, '');
 const TOKEN = options.telegram_bot_token;
