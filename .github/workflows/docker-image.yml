@@ -15,4 +15,4 @@ jobs:
         env:
           GITHUB_ACTIONS: true
           USER: ${{ secrets.USER }}
-          PASSWORD: ${{ secrets.USER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
