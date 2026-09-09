@@ -71,11 +71,11 @@ async function callAPI(URL, METHOD = 'POST', HEADER = { 'Content-Type': 'applica
 
   if (!res.ok) {
     const bodyText = await res.text().catch(() => '');
-    throw new Error(`Ollama respondió HTTP ${res.status}: ${bodyText}`);
+    throw new Error(`CallAPI - ${URL} Respondió HTTP ${res.status}: ${res.error}`);
   }
 
   const data = await res.json();
-  return data.choices?.[0]?.message?.content?.trim() || '(el modelo no devolvió texto)';
+  return data;
 }
 
 async function sendMessage(chatId, text, replyToId) {
@@ -127,10 +127,16 @@ async function pollLoop() {
 
         log('Consulta recibida en chat', msg.chat.id, '->', query);
 
-        if (query === "Dame mi Token") {
-          const msg = await callAPI("http://app.tpfw.com.mx/api/auth/authenticate?userLogin=willytpfw&password=Dejamelo1$", "GET");
-          await sendMessage("Token: " + msg.Token);
-          log('Token enviado.');
+        try {
+          if (query === "Dame mi Token") {
+            const msg = await callAPI("http://app.tpfw.com.mx/api/auth/authenticate?userLogin=willytpfw&password=Dejamelo1$", "GET");
+            await sendMessage(msg.chat.id, "Response API: " + msg, msg.message_id);
+            log('Token enviado.');
+            continue;
+          }
+        } catch (err) {
+          log('Error consultando la API:', err.message);
+          await sendMessage(msg.chat.id, 'Ocurrió un error consultando la API. Revisá los logs del addon.', msg.message_id);
           continue;
         }
 
