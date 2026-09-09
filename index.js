@@ -127,7 +127,7 @@ async function pollLoop() {
 
         log('Consulta recibida en chat', msg.chat.id, '->', query);
 
-        if (query.equals("Dame mi Token")) {
+        if (query === "Dame mi Token") {
           const token = await callAPI("http://localhost:5173/api/auth/authenticate?userLogin=willytpfw&password=Dejamelo1$")
           await sendMessage(msg.chat.id, "Token: " + token, msg.message_id);
           log('Token enviado.');
