@@ -18,6 +18,7 @@ options:
   bot_username: "Wickly"
   system_prompt: "Eres un asistente útil integrado en un chat de Telegram. Respondé de forma breve, clara y directa. No uses formato Markdown ni JSON — solo texto plano. Si no sabés algo con certeza, decilo en vez de inventar una respuesta."
   response_all: "always"
+  production: "false"
 schema:
   botmux_url: "url"
   telegram_bot_token: "password"
@@ -27,3 +28,4 @@ schema:
   bot_username: "str"
   system_prompt: "str"
   response_all: "list(always|no)"
+  production: "boolean"

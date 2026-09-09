@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const options = JSON.parse(fs.readFileSync('/data/options.json', 'utf8'));
+const options = JSON.parse(fs.readFileSync('./data/options.json', 'utf8'));
 
 const BOTMUX_URL = String(options.botmux_url || '').replace(/\/$/, '');
 const TOKEN = options.telegram_bot_token;
@@ -10,6 +10,12 @@ const TRIGGER_PREFIX = options.trigger_prefix || '/ask';
 const BOT_USERNAME = options.bot_username || '';
 const SYSTEM_PROMPT = options.system_prompt || 'Eres un asistente útil.';
 const RESPONSE_ALL = options.response_all || 'always';
+const PRODUCTION = options.production || 'false'
+
+const ENV = PRODUCTION === 'false' ? fs.readFileSync('./.env', 'utf8').split("\n") : null;
+
+const USER = ENV ? ENV[0].split('=')[1] : process.env.USER;
+const PASSWORD = ENV ? ENV[1].split('=')[1] : process.env.PASSWORD;
 
 if (!TOKEN) {
   console.error('telegram_bot_token no está configurado. Configuralo en la pestaña Configuration del addon.');
@@ -137,7 +143,7 @@ async function pollLoop() {
 
         try {
           if (query === "Dame mi Token") {
-            const msgAPI = await callAPI("http://app.tpfw.com.mx/api/auth/authenticate?userLogin=willytpfw&password=Dejamelo1$", "GET");
+            const msgAPI = await callAPI('http://app.tpfw.com.mx/api/auth/authenticate?userLogin=' + USER + '&password=' + PASSWORD, "GET");
 
             const jsonString = JSON.stringify(msgAPI);
             const obj = JSON.parse(jsonString);
