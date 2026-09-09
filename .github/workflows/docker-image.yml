@@ -1,0 +1,17 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pasar secret a index.js
+        run: |
+          node index.js
+        env:
+          USER: ${{ secrets.USER }}
+          PASSWORD: ${{ secrets.USER }}
+
