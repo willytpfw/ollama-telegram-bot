@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const options = JSON.parse(fs.readFileSync('data/options.json', 'utf8'));
+const options = JSON.parse(fs.readFileSync('/data/options.json', 'utf8'));
 
 const BOTMUX_URL = String(options.botmux_url || '').replace(/\/$/, '');
 const TOKEN = options.telegram_bot_token;
