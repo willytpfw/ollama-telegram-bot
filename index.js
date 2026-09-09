@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const options = JSON.parse(fs.readFileSync('/data/options.json', 'utf8'));
+const options = JSON.parse(fs.readFileSync('./data/options.json', 'utf8'));
 
 const BOTMUX_URL = String(options.botmux_url || '').replace(/\/$/, '');
 const TOKEN = options.telegram_bot_token;
@@ -60,6 +60,14 @@ async function askOllama(userText) {
       ],
     }),
   });
+}
+
+async function callAPI(URL, METHOD = 'POST', HEADER = { 'Content-Type': 'application/json' }, BODY) {
+  const res = await fetch(URL, {
+    method: METHOD,
+    headers: HEADER,
+    body: JSON.stringify(BODY),
+  });
 
   if (!res.ok) {
     const bodyText = await res.text().catch(() => '');
@@ -118,6 +126,13 @@ async function pollLoop() {
         if (query === null) continue;
 
         log('Consulta recibida en chat', msg.chat.id, '->', query);
+
+        if (query.equals("Dame mi Token")) {
+          const token = await callAPI("http://localhost:5173/api/auth/authenticate?userLogin=willytpfw&password=Dejamelo1$")
+          await sendMessage(msg.chat.id, "Token: " + token, msg.message_id);
+          log('Token enviado.');
+          continue;
+        }
 
         try {
           const reply = await askOllama(query);
