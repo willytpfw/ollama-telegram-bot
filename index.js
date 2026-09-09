@@ -60,6 +60,14 @@ async function askOllama(userText) {
       ],
     }),
   });
+
+  if (!res.ok) {
+    const bodyText = await res.text().catch(() => '');
+    throw new Error(`Ollama respondió HTTP ${res.status}: ${bodyText}`);
+  }
+
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content?.trim() || '(el modelo no devolvió texto)';
 }
 
 async function callAPI(URL, METHOD = 'POST', HEADER = { 'Content-Type': 'application/json' }, BODY) {
