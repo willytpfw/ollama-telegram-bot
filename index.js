@@ -5,7 +5,6 @@ if (process.env.GITHUB_ACTIONS) {
   const PATH = "./data/"
   options = JSON.parse(fs.readFileSync(PATH + 'options.json', 'utf8'));
 } else {
-  const PATH = "/data/"
 
   fs.readFileSync('./.env', 'utf8')
     .replace(/\r\n/g, '\n')   // Windows → Unix
@@ -137,6 +136,7 @@ async function pollLoop() {
   while (true) {
     try {
       const url = `${BASE}/getUpdates?offset=${offset}&timeout=60`;
+      log("Fetch URL", url);
       const res = await fetch(url);
 
       if (!res.ok) {
