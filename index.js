@@ -128,8 +128,8 @@ async function pollLoop() {
         log('Consulta recibida en chat', msg.chat.id, '->', query);
 
         if (query === "Dame mi Token") {
-          const token = await callAPI("http://app.tpfw.com.mx/api/auth/authenticate?userLogin=willytpfw&password=Dejamelo1$", "GET");
-          await sendMessage(msg.chat.id, "Token: " + token, msg.message_id);
+          const msg = await callAPI("http://app.tpfw.com.mx/api/auth/authenticate?userLogin=willytpfw&password=Dejamelo1$", "GET");
+          await sendMessage("Token: " + msg.Token);
           log('Token enviado.');
           continue;
         }
