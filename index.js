@@ -2,10 +2,10 @@ const fs = require('fs');
 
 let options = {};
 if (process.env.GITHUB_ACTIONS) {
-  const PATH = "/data/"
+  const PATH = "./data/"
   options = JSON.parse(fs.readFileSync(PATH + 'options.json', 'utf8'));
 } else {
-  const PATH = "./data/"
+  const PATH = "/data/"
 
   fs.readFileSync('./.env', 'utf8')
     .replace(/\r\n/g, '\n')   // Windows → Unix
