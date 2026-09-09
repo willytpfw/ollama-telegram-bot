@@ -1,7 +1,31 @@
 const fs = require('fs');
 
-const PATH = process.env.GITHUB_ACTIONS ? "/data/" : "./data/"
-const options = JSON.parse(fs.readFileSync(PATH + 'options.json', 'utf8'));
+let options = {};
+if (process.env.GITHUB_ACTIONS) {
+  const PATH = "/data/"
+  options = JSON.parse(fs.readFileSync(PATH + 'options.json', 'utf8'));
+} else {
+  const PATH = "./data/"
+
+  fs.readFileSync('./.env', 'utf8')
+    .replace(/\r\n/g, '\n')   // Windows → Unix
+    .replace(/\r/g, '\n')     // Viejos Mac → Unix
+    .split('\n')
+    .forEach(line => {
+      line = line.trim();
+
+      if (!line || line.startsWith('#')) return;
+
+      const sepIndex = line.indexOf('=');
+      if (sepIndex === -1) return;
+
+      const key = line.slice(0, sepIndex).trim();
+      const value = line.slice(sepIndex + 1).trim();
+
+      if (key) options[key] = value;
+    });
+
+};
 
 const BOTMUX_URL = String(options.botmux_url || '').replace(/\/$/, '');
 const TOKEN = options.telegram_bot_token;
@@ -13,10 +37,8 @@ const SYSTEM_PROMPT = options.system_prompt || 'Eres un asistente útil.';
 const RESPONSE_ALL = options.response_all || 'always';
 const PRODUCTION = options.production || 'false'
 
-const ENV = PRODUCTION === 'false' ? fs.readFileSync('./.env', 'utf8').split("\n") : null;
-
-const USER = ENV ? ENV[0].split('=')[1] : process.env.USER;
-const PASSWORD = ENV ? ENV[1].split('=')[1] : process.env.PASSWORD;
+const USER = process.env.USER;
+const PASSWORD = process.env.PASSWORD;
 
 if (!TOKEN) {
   console.error('telegram_bot_token no está configurado. Configuralo en la pestaña Configuration del addon.');
