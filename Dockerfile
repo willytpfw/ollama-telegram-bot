@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY index.js .
 
+RUN npm install
+
 COPY run.sh /run.sh
 RUN chmod a+x /run.sh
 
