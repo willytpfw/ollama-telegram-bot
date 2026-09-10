@@ -16,3 +16,10 @@ jobs:
           GITHUB_ACTIONS: true
           USER: ${{ secrets.USER }}
           PASSWORD: ${{ secrets.PASSWORD }}
+      - name: Build and Push
+        run: |
+          # 1. Construimos para la arquitectura que AWS App Runner necesita (amd64)
+          docker build --platform linux/amd64 -t willytpfw/ollama-telegram-bot
+          
+          # 2. Subimos la imagen ya autenticados
+          docker push willytpfw/ollama-telegram-bot
