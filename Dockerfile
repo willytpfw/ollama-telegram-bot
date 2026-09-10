@@ -1,5 +1,7 @@
 FROM ghcr.io/home-assistant/base:latest
 
+RUN apk add --no-cache nodejs npm
+
 WORKDIR /app
 
 # Copiar package.json antes de instalar dependencias
