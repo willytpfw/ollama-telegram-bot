@@ -28,4 +28,4 @@ schema:
   bot_username: "str"
   system_prompt: "str"
   response_all: "list(always|no)"
-  production: "boolean"
+  production: "bool"
