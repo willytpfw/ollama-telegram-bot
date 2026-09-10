@@ -128,7 +128,7 @@ async function sendMessage(chatId, text, replyToId) {
 async function pollLoop() {
   log('Iniciando poll loop contra', `${BASE}/getUpdates`);
 
-  while (true && PRODUCTION === "true") {
+  while (true && PRODUCTION === true) {
     try {
       const url = `${BASE}/getUpdates?offset=${offset}&timeout=60`;
       log("Fetch URL", url);
