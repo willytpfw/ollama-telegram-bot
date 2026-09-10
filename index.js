@@ -31,8 +31,8 @@ const SYSTEM_PROMPT = options.system_prompt || 'Eres un asistente útil.';
 const RESPONSE_ALL = options.response_all || 'always';
 const PRODUCTION = options.production || 'false'
 
-const USER = process.env.USER;
-const PASSWORD = process.env.PASSWORD;
+const USER = options.api_user;
+const PASSWORD = options.api_password;
 
 if (!TOKEN) {
   console.error('telegram_bot_token no está configurado. Configuralo en la pestaña Configuration del addon.');
