@@ -2,7 +2,6 @@ FROM ghcr.io/home-assistant/base:latest
 
 WORKDIR /app
 
-COPY package.json .
 COPY index.js .
 RUN npm install
 
