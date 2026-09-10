@@ -1,30 +1,25 @@
 const fs = require('fs');
 
 let options = {};
-if (process.env.GITHUB_ACTIONS) {
-  const PATH = "./data/"
-  options = JSON.parse(fs.readFileSync(PATH + 'options.json', 'utf8'));
-} else {
-
+if (fs.existsSync('/data/options.json')) {
+  // Corriendo como add-on de Home Assistant
+  options = JSON.parse(fs.readFileSync('/data/options.json', 'utf8'));
+} else if (fs.existsSync('./.env')) {
+  // Desarrollo local
   fs.readFileSync('./.env', 'utf8')
-    .replace(/\r\n/g, '\n')   // Windows → Unix
-    .replace(/\r/g, '\n')     // Viejos Mac → Unix
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n')
     .split('\n')
     .forEach(line => {
       line = line.trim();
-
       if (!line || line.startsWith('#')) return;
-
       const sepIndex = line.indexOf('=');
       if (sepIndex === -1) return;
-
       const key = line.slice(0, sepIndex).trim();
       const value = line.slice(sepIndex + 1).trim();
-
       if (key) options[key] = value;
     });
-
-};
+}
 
 const BOTMUX_URL = String(options.botmux_url || '').replace(/\/$/, '');
 const TOKEN = options.telegram_bot_token;
