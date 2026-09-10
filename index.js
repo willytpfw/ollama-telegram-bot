@@ -1,12 +1,19 @@
 const fs = require('fs');
 
+let fileEnv = null;
+
+if (fs.existsSync('./dev.env'))
+  fileEnv = 'dev.env'
+else
+  fileEnv = '.env'
+
 let options = {};
 if (fs.existsSync('/data/options.json')) {
   // Corriendo como add-on de Home Assistant
   options = JSON.parse(fs.readFileSync('/data/options.json', 'utf8'));
-} else if (fs.existsSync('./.env')) {
+} else if (fileEnv) {
   // Desarrollo local
-  fs.readFileSync('./.env', 'utf8')
+  fs.readFileSync(fileEnv, 'utf8')
     .replace(/\r\n/g, '\n')
     .replace(/\r/g, '\n')
     .split('\n')
@@ -34,7 +41,7 @@ const PRODUCTION = options.production || 'false';
 const USER = options.api_user;
 const PASSWORD = options.api_password;
 
-if (!TOKEN || PRODUCTION === true) {
+if (!TOKEN && PRODUCTION === true) {
   console.error('telegram_bot_token no está configurado. Configuralo en la pestaña Configuration del addon.');
   process.exit(1);
 }
