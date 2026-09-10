@@ -29,12 +29,12 @@ const TRIGGER_PREFIX = options.trigger_prefix || '/ask';
 const BOT_USERNAME = options.bot_username || '';
 const SYSTEM_PROMPT = options.system_prompt || 'Eres un asistente útil.';
 const RESPONSE_ALL = options.response_all || 'always';
-const PRODUCTION = options.production || 'false'
+const PRODUCTION = options.production || 'false';
 
 const USER = options.api_user;
 const PASSWORD = options.api_password;
 
-if (!TOKEN) {
+if (!TOKEN || PRODUCTION === true) {
   console.error('telegram_bot_token no está configurado. Configuralo en la pestaña Configuration del addon.');
   process.exit(1);
 }

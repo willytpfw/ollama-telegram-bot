@@ -18,6 +18,5 @@ jobs:
       - name: Run bot
         run: node index.js
         env:
-          GITHUB_ACTIONS: true
           USER: ${{ secrets.USER }}
           PASSWORD: ${{ secrets.PASSWORD }}
