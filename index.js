@@ -148,6 +148,7 @@ async function pollLoop() {
       }
 
       const data = await res.json();
+      const reply = null;
 
       if (!data.ok) {
         log('getUpdates: respuesta no ok', JSON.stringify(data));
@@ -168,7 +169,7 @@ async function pollLoop() {
 
         try {
           try {
-            const reply = await askOllama("Se está solicitando un Token en la siguiente consulta ? " + query);
+            reply = await askOllama("Se está solicitando un Token en la siguiente consulta ? " + query);
           }
           catch (err) {
             log('Error consultando Ollama:', err.message);
