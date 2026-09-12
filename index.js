@@ -170,6 +170,7 @@ async function pollLoop() {
         try {
           try {
             reply = await askOllama("Se está solicitando un Token en la siguiente consulta ? " + query);
+            log("Respuesta Ollama acerca del Toek: " + reply);
           }
           catch (err) {
             log('Error consultando Ollama:', err.message);
