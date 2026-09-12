@@ -167,7 +167,16 @@ async function pollLoop() {
         log('Consulta recibida en chat', msg.chat.id, '->', query);
 
         try {
-          if (query === "Dame mi Token") {
+          try {
+            const reply = await askOllama("Se está solicitando un Token en la siguiente consulta ? " + query);
+          }
+          catch (err) {
+            log('Error consultando Ollama:', err.message);
+            await sendMessage(msg.chat.id, 'Ocurrió un error consultando el modelo. Revisá los logs del addon.', msg.message_id);
+          }
+
+          if (reply.toupper() === "SI") {
+            log('Llamando API...');
             const msgAPI = await callAPI('http://app.tpfw.com.mx/api/auth/authenticate?userLogin=' + USER + '&password=' + PASSWORD, "GET");
 
             const jsonString = JSON.stringify(msgAPI);
@@ -176,11 +185,13 @@ async function pollLoop() {
             log('Token enviado.');
             continue;
           }
-        } catch (err) {
+        }
+        catch (err) {
           log('Error consultando la API:', err.message);
           await sendMessage(msg.chat.id, 'Ocurrió un error consultando la API. Revisá los logs del addon.', msg.message_id);
           continue;
         }
+
 
         try {
           const reply = await askOllama(query);
