@@ -148,7 +148,7 @@ async function pollLoop() {
       }
 
       const data = await res.json();
-      const reply = "";
+      let reply = "";
 
       if (!data.ok) {
         log('getUpdates: respuesta no ok', JSON.stringify(data));
