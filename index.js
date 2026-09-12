@@ -86,7 +86,7 @@ async function askOllama(userText) {
       model: MODEL,
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: userText },
+        { role: 'user', content: 'TPFWBOT' },
       ],
     }),
   });
