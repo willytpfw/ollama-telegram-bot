@@ -169,7 +169,7 @@ async function pollLoop() {
 
         try {
           try {
-            reply = await askOllama("Responde solo Si o No a la siguiente duda: Se está solicitando un Token en la pregunta: " + query);
+            reply = await askOllama("En el enunciado '" + query + "' se esta solicitando un Token, sin importar si lo tienes.");
             log("Respuesta Ollama acerca del Token: " + reply);
           }
           catch (err) {
