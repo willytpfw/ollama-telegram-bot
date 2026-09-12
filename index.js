@@ -176,7 +176,7 @@ async function pollLoop() {
             await sendMessage(msg.chat.id, 'Ocurrió un error consultando el modelo. Revisá los logs del addon.', msg.message_id);
           }
 
-          if (reply.toupper() === "SI") {
+          if (reply.toUpperCase() === "SI") {
             log('Llamando API...');
             const msgAPI = await callAPI('http://app.tpfw.com.mx/api/auth/authenticate?userLogin=' + USER + '&password=' + PASSWORD, "GET");
 
