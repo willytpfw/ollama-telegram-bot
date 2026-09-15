@@ -159,15 +159,18 @@ async function pollLoop() {
 
       for (const update of data.result || []) {
 
-        if (update.channel_post.sender_chat.id.toString() !== CHATID) continue;
 
         offset = update.update_id + 1;
 
         const msg = update.message || update.channel_post;
         if (!msg || !msg.text) continue;
 
+        if (msg.sender_chat.id.toString() !== CHATID) continue;
+
         const query = extractQuery(msg.text);
         if (query === null) continue;
+
+
 
         log('Consulta recibida en chat', msg.chat.id, '->', query);
 
