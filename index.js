@@ -159,7 +159,7 @@ async function pollLoop() {
 
       for (const update of data.result || []) {
 
-        if (update.id.toString() !== CHATID) continue;
+        if (update.channel_post.sender_chat.id.toString() !== CHATID) continue;
 
         offset = update.update_id + 1;
 
