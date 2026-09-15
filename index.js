@@ -165,7 +165,7 @@ async function pollLoop() {
 
         if (!msg || !msg.text) continue;
 
-        const chatid = msg.sender_chat || msg.chat;
+        const chat = msg.sender_chat || msg.chat;
 
         if (chat.id !== CHATID) continue;
 
