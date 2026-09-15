@@ -40,6 +40,7 @@ const PRODUCTION = options.production || 'false';
 
 const USER = options.api_user;
 const PASSWORD = options.api_password;
+const CHATID = options.chat_id;
 
 if (!TOKEN && PRODUCTION === true) {
   console.error('telegram_bot_token no está configurado. Configuralo en la pestaña Configuration del addon.');
@@ -157,6 +158,9 @@ async function pollLoop() {
       }
 
       for (const update of data.result || []) {
+
+        if (update.id.toString() !== CHATID) continue;
+
         offset = update.update_id + 1;
 
         const msg = update.message || update.channel_post;
