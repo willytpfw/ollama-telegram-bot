@@ -165,14 +165,18 @@ async function pollLoop() {
 
         if (!msg || !msg.text) continue;
 
-        const chat = msg.sender_chat || msg.chat;
-
-        if (chat.id !== CHATID) continue;
 
         const query = extractQuery(msg.text);
         if (query === null) continue;
 
         log('Consulta recibida en chat', msg.chat.id, '->', query);
+
+        const chat = msg.sender_chat || msg.chat;
+
+        if (chat.id.toString() !== CHATID) {
+          console.log('ID del chat', chat.id, '->', CHATID);
+          continue;
+        }
 
         try {
           try {
