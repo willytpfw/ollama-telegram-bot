@@ -82,25 +82,23 @@ function extractQuery(text) {
 }
 
 async function askLaya(userText) {
-  const res = await axios({
-    method: 'GET',
-    url: LAYA_URL,
-    headers: { 'Content-Type': 'application/json' },
-    data: { raw_body: userText },
-  });
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: LAYA_URL,
+      headers: { 'Content-Type': 'application/json' },
+      data: { raw_body: userText }
+    });
 
-  if (!res.ok) {
-    const bodyText = await res.text().catch(() => '');
-    throw new Error(`Laya respondió HTTP ${res.status}: ${bodyText}`);
-  }
+    // Axios ya parsea JSON automáticamente
+    const data = res.data;
 
-  const data = await res.json();
-  const rtokenResValue = data.Ask_Token;
-  if (rtokenResValue > .5) {
-    return "SI"
-  }
-  else {
-    return "NO"
+    const rtokenResValue = data.Ask_Token;
+
+    return rtokenResValue > 0.5 ? "SI" : "NO";
+
+  } catch (err) {
+    throw new Error(`Error llamando a Laya: ${err.message}`);
   }
 }
 
