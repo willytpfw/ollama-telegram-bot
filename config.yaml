@@ -1,5 +1,5 @@
 name: "Ollama Telegram Bot"
-version: "2.0.38"
+version: "2.0.39"
 slug: "ollama_telegram_bot"
 description: "Responde mensajes de Telegram usando Ollama, vía el proxy de BotMux"
 url: "https://github.com/willytpfw/ollama-telegram-bot"
