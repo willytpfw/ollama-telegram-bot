@@ -81,12 +81,11 @@ function extractQuery(text) {
 }
 
 async function askLaya(userText) {
-  const res = await fetch(LAYA_URL, {
+  const res = await axios({
     method: 'GET',
+    url: LAYA_URL,
     headers: { 'Content-Type': 'application/json' },
-    data: JSON.stringify({
-      raw_body: userText
-    }),
+    data: { raw_body: userText },
   });
 
   if (!res.ok) {
