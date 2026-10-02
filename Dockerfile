@@ -1,18 +1,19 @@
-FROM ghcr.io/home-assistant/base:latest
+ARG BUILD_FROM=ghcr.io/home-assistant/base:latest
+FROM ${BUILD_FROM}
 
+# Node.js y npm (la imagen base de HA no los trae)
 RUN apk add --no-cache nodejs npm
 
 WORKDIR /app
 
-# Copiar package.json antes de instalar dependencias
-COPY package.json .
+# Dependencias primero, para aprovechar la caché de Docker
+COPY package*.json ./
+RUN npm install --omit=dev && ls node_modules/axios
 
-RUN npm install
+# Código de la aplicación
+COPY index.js ./
 
-# Copiar tu código
-COPY index.js .
-
-# Copiar script de inicio
+# Script de inicio
 COPY run.sh /run.sh
 RUN chmod a+x /run.sh
 
