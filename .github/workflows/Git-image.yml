@@ -23,13 +23,13 @@ jobs:
 
       - name: Verificar que axios carga
         run: node -e "require('axios'); console.log('axios OK')"
-
-  hook:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Llamar WebHook
-        run: |
-          curl --fail -X POST "${{ secrets.HA_WEBHOOK_URL }}" \
-            -H "Content-Type: application/json" \
-            -d '{"mensaje":"Build OK: ollama-telegram-bot"}'
+        
+  Hook: 
+      runs-on: ubuntu-latest
+      needs: build
+      steps:
+        - name: Llamar WebHook
+          if: ${{ success() }}
+          run: |
+            curl -X POST https://hooks.nabu.casa/gAAAAABqh76ggj_JMSO9ERNexwb0sr5iBtQlhE3-1GOCAr71nTMHTajDYLjc9yYHdDnBpP-00LEcCiKLaaUGwbPDYU-vEefE4NG7XNp4Pk4GzPCr2P6fJ_TW4L6ehL9k8bo9EgPln-0fW8OpjMvNsUtkXU7hEAXsQFbcdRktFIKnp1zKOMyeXLY= \
+                 -H "Content-Type: application/json" \
