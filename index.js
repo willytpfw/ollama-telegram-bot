@@ -31,6 +31,7 @@ if (fs.existsSync('/data/options.json')) {
 const BOTMUX_URL = String(options.botmux_url || '').replace(/\/$/, '');
 const TOKEN = options.telegram_bot_token;
 const OLLAMA_URL = String(options.ollama_url || '').replace(/\/$/, '') + '/v1/chat/completions';
+const LAYA_URL = options.laya_url;
 const MODEL = options.ollama_model || 'llama3.2:latest';
 const TRIGGER_PREFIX = options.trigger_prefix || '/ask';
 const BOT_USERNAME = options.bot_username || '';
@@ -78,6 +79,31 @@ function extractQuery(text) {
 
   return null;
 }
+
+async function askLaya(userText) {
+  const res = await fetch(LAYA_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      raw_body: "Dame mi Token"
+    }),
+  });
+
+  if (!res.ok) {
+    const bodyText = await res.text().catch(() => '');
+    throw new Error(`Laya respondió HTTP ${res.status}: ${bodyText}`);
+  }
+
+  const data = await res.json();
+  const rtokenResValue = data.Ask_Token;
+  if (rtokenResValue > .5) {
+    return "SI"
+  }
+  else {
+    return "NO"
+  }
+}
+
 
 async function askOllama(userText) {
   const res = await fetch(OLLAMA_URL, {
@@ -179,12 +205,21 @@ async function pollLoop() {
         }
 
         try {
+          // try {
+          //   reply = await askOllama("En el enunciado '" + query + "' se esta solicitando un Token, sin importar si lo tienes.");
+          //   log("Respuesta Ollama acerca del Token: " + reply);
+          // }
+          // catch (err) {
+          //   log('Error consultando Ollama:', err.message);
+          //   await sendMessage(msg.chat.id, 'Ocurrió un error consultando el modelo. Revisá los logs del addon.', msg.message_id);
+          // }
+
           try {
-            reply = await askOllama("En el enunciado '" + query + "' se esta solicitando un Token, sin importar si lo tienes.");
-            log("Respuesta Ollama acerca del Token: " + reply);
+            reply = await askLaya(query);
+            log("Respuesta Laya: " + reply);
           }
           catch (err) {
-            log('Error consultando Ollama:', err.message);
+            log('Error consultando Laya:', err.message);
             await sendMessage(msg.chat.id, 'Ocurrió un error consultando el modelo. Revisá los logs del addon.', msg.message_id);
           }
 
