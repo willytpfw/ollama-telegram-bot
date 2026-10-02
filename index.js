@@ -82,7 +82,7 @@ function extractQuery(text) {
 
 async function askLaya(userText) {
   const res = await fetch(LAYA_URL, {
-    method: 'POST',
+    method: 'GET',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       raw_body: "Dame mi Token"
