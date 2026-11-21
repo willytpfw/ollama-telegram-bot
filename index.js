@@ -181,7 +181,7 @@ async function pollLoop() {
         continue;
       }
 
-      obtenerOpcionSeleccionada(data.result);
+      obtenerOpcionSeleccionada(TOKEN, CHATID);
 
       for (const update of data.result || []) {
 
@@ -291,9 +291,16 @@ async function enviarMenuTelegram({ botToken, chatId }) {
   return data.result;
 }
 
-async function obtenerOpcionSeleccionada({ result }) {
+async function obtenerOpcionSeleccionada({ botToken, chatId }) {
+  const url = `${BASE}/getUpdates`;
 
-  const callbacksDelChat = result
+  const { data } = await axios.get(url);
+
+  if (!data.ok) {
+    throw new Error(data.description || "No se pudieron obtener las actualizaciones");
+  }
+
+  const callbacksDelChat = data.result
     .filter((update) => update.callback_query)
     .filter((update) => {
       const idChatCallback = update.callback_query.message?.chat?.id;
@@ -313,8 +320,6 @@ async function obtenerOpcionSeleccionada({ result }) {
     opt_2: "Elegiste la Opción 2.",
     ayuda: "Aquí tienes la ayuda.",
   };
-
-  log(`Recibí la opción: ${opcion}`);
 
   return {
     opcion,
