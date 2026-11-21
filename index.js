@@ -260,7 +260,7 @@ async function pollLoop() {
 
 async function enviarMenuTelegram({ botToken, chatId }) {
   const url = `${BASE}/sendMessage`;
-
+  log("Calling Menu to chat:", chatId);
   const response = await fetch(url, {
     method: "POST",
     headers: {
