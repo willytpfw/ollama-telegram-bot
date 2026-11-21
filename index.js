@@ -198,15 +198,8 @@ async function pollLoop() {
 
         log('Consulta recibida en chat', msg.chat.id, '->', query);
 
-        const chat = msg.sender_chat || msg.chat;
-
-        if (chat.id.toString() !== CHATID)
-          enviarMenuTelegram(TOKEN,);
-
-        if (chat.id.toString() !== CHATID) {
-          console.log('ID del chat', chat.id, '->', CHATID);
-          continue;
-        }
+        if (CHATID !== "")
+          enviarMenuTelegram(TOKEN, CHATID);
 
         try {
           // try {
