@@ -290,33 +290,38 @@ async function enviarMenuTelegram(botToken, chatId) {
 
 async function obtenerOpcionSeleccionada(data) {
 
+  try {
+    const callbacksDelChat = data
+      .filter((update) => update.callback_query)
+      .filter((update) => {
+        const idChatCallback = update.callback_query.message?.chat?.id;
+        return String(idChatCallback) === String(chatId);
+      });
 
-  const callbacksDelChat = data
-    .filter((update) => update.callback_query)
-    .filter((update) => {
-      const idChatCallback = update.callback_query.message?.chat?.id;
-      return String(idChatCallback) === String(chatId);
-    });
+    const ultimoCallback = callbacksDelChat[callbacksDelChat.length - 1];
 
-  const ultimoCallback = callbacksDelChat[callbacksDelChat.length - 1];
+    if (!ultimoCallback) {
+      return null;
+    }
 
-  if (!ultimoCallback) {
-    return null;
+    const opcion = ultimoCallback.callback_query.data;
+
+    log(`Recibí la opción: ${opcion}`);
+
+    const respuestas = {
+      opt_1: "Elegiste la Opción 1.",
+      opt_2: "Elegiste la Opción 2.",
+      ayuda: "Aquí tienes la ayuda.",
+    };
+
+    return {
+      opcion,
+      respuesta: respuestas[opcion] || `Recibí la opción: ${opcion}`,
+    };
+  } catch (err) {
+    log('Error en obtenerOpcionSeleccionada:', err.message);
+    await sleep(5000);
   }
-
-  const opcion = ultimoCallback.callback_query.data;
-
-  log(`Recibí la opción: ${opcion}`);
-
-  const respuestas = {
-    opt_1: "Elegiste la Opción 1.",
-    opt_2: "Elegiste la Opción 2.",
-    ayuda: "Aquí tienes la ayuda.",
-  };
-
-  return {
-    opcion,
-    respuesta: respuestas[opcion] || `Recibí la opción: ${opcion}`,
-  };
 }
+
 pollLoop();
