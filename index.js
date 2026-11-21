@@ -181,6 +181,8 @@ async function pollLoop() {
         continue;
       }
 
+      obtenerOpcionSeleccionada(data.result);
+
       for (const update of data.result || []) {
 
         offset = update.update_id + 1;
@@ -238,6 +240,7 @@ async function pollLoop() {
           continue;
         }
 
+        enviarMenuTelegram(TOKEN, CHATID);
 
         try {
           const reply = await askOllama(query);
@@ -254,4 +257,68 @@ async function pollLoop() {
   }
 }
 
+export async function enviarMenuTelegram({ botToken, chatId }) {
+  const url = `${BASE}/sendMessage`;
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: "Selecciona una opción:",
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: "Opción 1", callback_data: "opt_1" },
+            { text: "Opción 2", callback_data: "opt_2" },
+          ],
+          [
+            { text: "Ayuda", callback_data: "ayuda" },
+          ],
+        ],
+      },
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok || !data.ok) {
+    throw new Error(data.description || "No se pudo enviar el menú a Telegram");
+  }
+
+  return data.result;
+}
+
+export async function obtenerOpcionSeleccionada({ result }) {
+
+  const callbacksDelChat = result
+    .filter((update) => update.callback_query)
+    .filter((update) => {
+      const idChatCallback = update.callback_query.message?.chat?.id;
+      return String(idChatCallback) === String(chatId);
+    });
+
+  const ultimoCallback = callbacksDelChat[callbacksDelChat.length - 1];
+
+  if (!ultimoCallback) {
+    return null;
+  }
+
+  const opcion = ultimoCallback.callback_query.data;
+
+  const respuestas = {
+    opt_1: "Elegiste la Opción 1.",
+    opt_2: "Elegiste la Opción 2.",
+    ayuda: "Aquí tienes la ayuda.",
+  };
+
+  log(`Recibí la opción: ${opcion}`);
+
+  return {
+    opcion,
+    respuesta: respuestas[opcion] || `Recibí la opción: ${opcion}`,
+  };
+}
 pollLoop();
