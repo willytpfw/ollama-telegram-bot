@@ -285,7 +285,7 @@ async function enviarMenuTelegram({ botToken, chatId }) {
   const data = await response.json();
 
   if (!response.ok || !data.ok) {
-    throw new Error(data.description || "No se pudo enviar el menú a Telegram");
+    log(data.description || "No se pudo enviar el menú a Telegram");
   }
 
   return data.result;
@@ -297,7 +297,7 @@ async function obtenerOpcionSeleccionada({ botToken, chatId }) {
   const { data } = await axios.get(url);
 
   if (!data.ok) {
-    throw new Error(data.description || "No se pudieron obtener las actualizaciones");
+    log(data.description || "No se pudieron obtener las actualizaciones");
   }
 
   const callbacksDelChat = data.result
@@ -314,6 +314,8 @@ async function obtenerOpcionSeleccionada({ botToken, chatId }) {
   }
 
   const opcion = ultimoCallback.callback_query.data;
+
+  log(`Recibí la opción: ${opcion}`);
 
   const respuestas = {
     opt_1: "Elegiste la Opción 1.",
