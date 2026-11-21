@@ -200,7 +200,7 @@ async function pollLoop() {
 
         const chat = msg.sender_chat || msg.chat;
 
-        enviarMenuTelegram(TOKEN, chat.id);
+        enviarMenuTelegram(TOKEN, msg.chat.id);
 
         if (chat.id.toString() !== CHATID) {
           console.log('ID del chat', chat.id, '->', CHATID);
