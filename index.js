@@ -257,7 +257,7 @@ async function pollLoop() {
   }
 }
 
-export async function enviarMenuTelegram({ botToken, chatId }) {
+async function enviarMenuTelegram({ botToken, chatId }) {
   const url = `${BASE}/sendMessage`;
 
   const response = await fetch(url, {
@@ -291,7 +291,7 @@ export async function enviarMenuTelegram({ botToken, chatId }) {
   return data.result;
 }
 
-export async function obtenerOpcionSeleccionada({ result }) {
+async function obtenerOpcionSeleccionada({ result }) {
 
   const callbacksDelChat = result
     .filter((update) => update.callback_query)
