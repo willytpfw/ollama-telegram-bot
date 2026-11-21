@@ -200,128 +200,128 @@ async function pollLoop() {
 
         const chat = msg.sender_chat || msg.chat;
 
-        if (chat.id.toString() !== CHATID) {
+        if (chat.id.toString() !== CHATID)
           enviarMenuTelegram(TOKEN,);
 
-          if (chat.id.toString() !== CHATID) {
-            console.log('ID del chat', chat.id, '->', CHATID);
-            continue;
-          }
+        if (chat.id.toString() !== CHATID) {
+          console.log('ID del chat', chat.id, '->', CHATID);
+          continue;
+        }
+
+        try {
+          // try {
+          //   reply = await askOllama("En el enunciado '" + query + "' se esta solicitando un Token, sin importar si lo tienes.");
+          //   log("Respuesta Ollama acerca del Token: " + reply);
+          // }
+          // catch (err) {
+          //   log('Error consultando Ollama:', err.message);
+          //   await sendMessage(msg.chat.id, 'Ocurrió un error consultando el modelo. Revisá los logs del addon.', msg.message_id);
+          // }
 
           try {
-            // try {
-            //   reply = await askOllama("En el enunciado '" + query + "' se esta solicitando un Token, sin importar si lo tienes.");
-            //   log("Respuesta Ollama acerca del Token: " + reply);
-            // }
-            // catch (err) {
-            //   log('Error consultando Ollama:', err.message);
-            //   await sendMessage(msg.chat.id, 'Ocurrió un error consultando el modelo. Revisá los logs del addon.', msg.message_id);
-            // }
-
-            try {
-              reply = await askLaya(query);
-              log("Respuesta Laya: " + reply);
-            }
-            catch (err) {
-              log('Error consultando Laya:', err.message);
-              await sendMessage(msg.chat.id, 'Ocurrió un error consultando el modelo. Revisá los logs del addon.', msg.message_id);
-            }
-
-            if (reply.toUpperCase() === "SI") {
-              log('Llamando API...');
-              const msgAPI = await callAPI('http://app.tpfw.com.mx/api/auth/authenticate?userLogin=' + USER + '&password=' + PASSWORD, "GET");
-
-              const jsonString = JSON.stringify(msgAPI);
-              const obj = JSON.parse(jsonString);
-              await sendMessage(msg.chat.id, "Token: " + obj.Token, msg.message_id);
-              log('Token enviado.');
-              continue;
-            }
+            reply = await askLaya(query);
+            log("Respuesta Laya: " + reply);
           }
           catch (err) {
-            log('Error consultando la API:', err.message);
-            await sendMessage(msg.chat.id, 'Ocurrió un error consultando la API. Revisá los logs del addon.', msg.message_id);
-            continue;
-          }
-
-          try {
-            const reply = await askOllama(query);
-            await sendMessage(msg.chat.id, reply, msg.message_id);
-          } catch (err) {
-            log('Error consultando Ollama:', err.message);
+            log('Error consultando Laya:', err.message);
             await sendMessage(msg.chat.id, 'Ocurrió un error consultando el modelo. Revisá los logs del addon.', msg.message_id);
           }
+
+          if (reply.toUpperCase() === "SI") {
+            log('Llamando API...');
+            const msgAPI = await callAPI('http://app.tpfw.com.mx/api/auth/authenticate?userLogin=' + USER + '&password=' + PASSWORD, "GET");
+
+            const jsonString = JSON.stringify(msgAPI);
+            const obj = JSON.parse(jsonString);
+            await sendMessage(msg.chat.id, "Token: " + obj.Token, msg.message_id);
+            log('Token enviado.');
+            continue;
+          }
         }
-      } catch (err) {
-        log('Error en el poll loop:', err.message);
-        await sleep(5000);
+        catch (err) {
+          log('Error consultando la API:', err.message);
+          await sendMessage(msg.chat.id, 'Ocurrió un error consultando la API. Revisá los logs del addon.', msg.message_id);
+          continue;
+        }
+
+        try {
+          const reply = await askOllama(query);
+          await sendMessage(msg.chat.id, reply, msg.message_id);
+        } catch (err) {
+          log('Error consultando Ollama:', err.message);
+          await sendMessage(msg.chat.id, 'Ocurrió un error consultando el modelo. Revisá los logs del addon.', msg.message_id);
+        }
       }
+    } catch (err) {
+      log('Error en el poll loop:', err.message);
+      await sleep(5000);
     }
+  }
 }
 
-  async function enviarMenuTelegram({ botToken, chatId }) {
-    const url = `${BASE}/sendMessage`;
-    log("Calling Menu to chat:", chatId);
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: "Selecciona una opción:",
-        reply_markup: {
-          inline_keyboard: [
-            [
-              { text: "Opción 1", callback_data: "opt_1" },
-              { text: "Opción 2", callback_data: "opt_2" },
-            ],
-            [
-              { text: "Ayuda", callback_data: "ayuda" },
-            ],
+async function enviarMenuTelegram({ botToken, chatId }) {
+  const url = `${BASE}/sendMessage`;
+  log("Calling Menu to chat:", chatId);
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: "Selecciona una opción:",
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: "Opción 1", callback_data: "opt_1" },
+            { text: "Opción 2", callback_data: "opt_2" },
           ],
-        },
-      }),
+          [
+            { text: "Ayuda", callback_data: "ayuda" },
+          ],
+        ],
+      },
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok || !data.ok) {
+    log(data.description || "No se pudo enviar el menú a Telegram");
+  }
+
+  return data.result;
+}
+
+async function obtenerOpcionSeleccionada({ data }) {
+
+
+  const callbacksDelChat = data
+    .filter((update) => update.callback_query)
+    .filter((update) => {
+      const idChatCallback = update.callback_query.message?.chat?.id;
+      return String(idChatCallback) === String(chatId);
     });
 
-    const data = await response.json();
+  const ultimoCallback = callbacksDelChat[callbacksDelChat.length - 1];
 
-    if (!response.ok || !data.ok) {
-      log(data.description || "No se pudo enviar el menú a Telegram");
-    }
-
-    return data.result;
+  if (!ultimoCallback) {
+    return null;
   }
 
-  async function obtenerOpcionSeleccionada({ data }) {
+  const opcion = ultimoCallback.callback_query.data;
 
+  log(`Recibí la opción: ${opcion}`);
 
-    const callbacksDelChat = data
-      .filter((update) => update.callback_query)
-      .filter((update) => {
-        const idChatCallback = update.callback_query.message?.chat?.id;
-        return String(idChatCallback) === String(chatId);
-      });
+  const respuestas = {
+    opt_1: "Elegiste la Opción 1.",
+    opt_2: "Elegiste la Opción 2.",
+    ayuda: "Aquí tienes la ayuda.",
+  };
 
-    const ultimoCallback = callbacksDelChat[callbacksDelChat.length - 1];
-
-    if (!ultimoCallback) {
-      return null;
-    }
-
-    const opcion = ultimoCallback.callback_query.data;
-
-    log(`Recibí la opción: ${opcion}`);
-
-    const respuestas = {
-      opt_1: "Elegiste la Opción 1.",
-      opt_2: "Elegiste la Opción 2.",
-      ayuda: "Aquí tienes la ayuda.",
-    };
-
-    return {
-      opcion,
-      respuesta: respuestas[opcion] || `Recibí la opción: ${opcion}`,
-    };
-  }
-  pollLoop();
+  return {
+    opcion,
+    respuesta: respuestas[opcion] || `Recibí la opción: ${opcion}`,
+  };
+}
+pollLoop();
