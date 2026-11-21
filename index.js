@@ -200,7 +200,7 @@ async function pollLoop() {
         log('Chat configured: ', CHATID);
 
         if (CHATID !== "")
-          enviarMenuTelegram(TOKEN, CHATID);
+          enviarMenuTelegram({ botToken: TOKEN, chatId: CHATID });
 
         try {
           // try {
