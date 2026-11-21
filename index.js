@@ -184,7 +184,7 @@ async function pollLoop() {
       for (const update of data.result || []) {
 
         log("Update: ", JSON.stringify(update));
-        obtenerOpcionSeleccionada(update);
+        //obtenerOpcionSeleccionada(update);
 
         offset = update.update_id + 1;
 
