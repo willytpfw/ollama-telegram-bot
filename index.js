@@ -184,7 +184,8 @@ async function pollLoop() {
       for (const update of data.result || []) {
 
         log("Update: ", JSON.stringify(update));
-        //obtenerOpcionSeleccionada(update);
+
+        obtenerOpcionSeleccionada(update);
 
         offset = update.update_id + 1;
 
@@ -200,7 +201,7 @@ async function pollLoop() {
         log('Chat configured: ', CHATID);
 
         if (CHATID !== "")
-          enviarMenuTelegram({ botToken: TOKEN, chatId: CHATID });
+          enviarMenuTelegram(TOKEN, CHATID);
 
         try {
           // try {
@@ -253,7 +254,7 @@ async function pollLoop() {
   }
 }
 
-async function enviarMenuTelegram({ botToken, chatId }) {
+async function enviarMenuTelegram(botToken, chatId) {
   const url = `${BASE}/sendMessage`;
   log("Calling Menu to chat:", chatId);
   const response = await fetch(url, {
@@ -287,7 +288,7 @@ async function enviarMenuTelegram({ botToken, chatId }) {
   return data.result;
 }
 
-async function obtenerOpcionSeleccionada({ data }) {
+async function obtenerOpcionSeleccionada(data) {
 
 
   const callbacksDelChat = data
