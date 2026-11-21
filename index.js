@@ -197,6 +197,7 @@ async function pollLoop() {
         if (query === null) continue;
 
         log('Consulta recibida en chat', msg.chat.id, '->', query);
+        log('Chat configured: ', CHATID);
 
         if (CHATID !== "")
           enviarMenuTelegram(TOKEN, CHATID);
