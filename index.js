@@ -181,9 +181,9 @@ async function pollLoop() {
         continue;
       }
 
-      obtenerOpcionSeleccionada(TOKEN, CHATID);
-
       for (const update of data.result || []) {
+
+        obtenerOpcionSeleccionada(data.result);
 
         offset = update.update_id + 1;
 
@@ -240,7 +240,7 @@ async function pollLoop() {
           continue;
         }
 
-        enviarMenuTelegram(TOKEN, CHATID);
+        enviarMenuTelegram(TOKEN, chat.id);
 
         try {
           const reply = await askOllama(query);
@@ -291,16 +291,10 @@ async function enviarMenuTelegram({ botToken, chatId }) {
   return data.result;
 }
 
-async function obtenerOpcionSeleccionada({ botToken, chatId }) {
-  const url = `${BASE}/getUpdates`;
+async function obtenerOpcionSeleccionada({ data }) {
 
-  const { data } = await axios.get(url);
 
-  if (!data.ok) {
-    log(data.description || "No se pudieron obtener las actualizaciones");
-  }
-
-  const callbacksDelChat = data.result
+  const callbacksDelChat = data
     .filter((update) => update.callback_query)
     .filter((update) => {
       const idChatCallback = update.callback_query.message?.chat?.id;
