@@ -200,6 +200,8 @@ async function pollLoop() {
 
         const chat = msg.sender_chat || msg.chat;
 
+        enviarMenuTelegram(TOKEN, chat.id);
+
         if (chat.id.toString() !== CHATID) {
           console.log('ID del chat', chat.id, '->', CHATID);
           continue;
@@ -240,8 +242,6 @@ async function pollLoop() {
           await sendMessage(msg.chat.id, 'Ocurrió un error consultando la API. Revisá los logs del addon.', msg.message_id);
           continue;
         }
-
-        enviarMenuTelegram(TOKEN, chat.id);
 
         try {
           const reply = await askOllama(query);
