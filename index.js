@@ -290,6 +290,8 @@ async function enviarMenuTelegram(botToken, chatId) {
 
 async function obtenerOpcionSeleccionada(data, chatId) {
   try {
+
+    log("Call obtenerOpcionSeleccionada ", JSON.stringify(data));
     const updates = Array.isArray(data)
       ? data
       : Array.isArray(data?.result)
@@ -320,6 +322,7 @@ async function obtenerOpcionSeleccionada(data, chatId) {
       ayuda: "Aquí tienes la ayuda.",
     };
 
+    log("Opcion :", opcion);
     return {
       opcion,
       respuesta: respuestas[opcion] || `Recibí la opción: ${opcion}`,
