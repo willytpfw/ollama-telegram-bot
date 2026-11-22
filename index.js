@@ -185,7 +185,7 @@ async function pollLoop() {
 
         log("Update: ", JSON.stringify(update));
 
-        obtenerOpcionSeleccionada(update);
+        obtenerOpcionSeleccionada(update, CHATID);
 
         offset = update.update_id + 1;
 
@@ -288,12 +288,20 @@ async function enviarMenuTelegram(botToken, chatId) {
   return data.result;
 }
 
-async function obtenerOpcionSeleccionada(data) {
-
+async function obtenerOpcionSeleccionada(data, chatId) {
   try {
-    const callbacksDelChat = data
-      .filter((update) => update.callback_query)
+    const updates = Array.isArray(data)
+      ? data
+      : Array.isArray(data?.result)
+        ? data.result
+        : data && typeof data === "object"
+          ? [data]
+          : [];
+
+    const callbacksDelChat = updates
+      .filter((update) => update && update.callback_query)
       .filter((update) => {
+        if (!chatId) return true;
         const idChatCallback = update.callback_query.message?.chat?.id;
         return String(idChatCallback) === String(chatId);
       });
@@ -306,8 +314,6 @@ async function obtenerOpcionSeleccionada(data) {
 
     const opcion = ultimoCallback.callback_query.data;
 
-    log(`Recibí la opción: ${opcion}`);
-
     const respuestas = {
       opt_1: "Elegiste la Opción 1.",
       opt_2: "Elegiste la Opción 2.",
@@ -318,9 +324,9 @@ async function obtenerOpcionSeleccionada(data) {
       opcion,
       respuesta: respuestas[opcion] || `Recibí la opción: ${opcion}`,
     };
-  } catch (err) {
-    log('Error en obtenerOpcionSeleccionada:', err.message);
-    await sleep(5000);
+  } catch (error) {
+    console.error("Error en obtenerOpcionSeleccionada:", error.message);
+    return null;
   }
 }
 
